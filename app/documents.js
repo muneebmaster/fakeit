@@ -6,6 +6,7 @@ process.on('SIGINT', () => {
 
 import faker from 'faker';
 import Chance from 'chance';
+import moment from 'moment';
 import Base from './base';
 import { objectSearch, pool } from './utils';
 import { set, get } from 'lodash';
@@ -129,6 +130,7 @@ export class Document extends Base {
     this.chance = new Chance();
     this.faker = faker;
     this.updateFakers(this.options.seed);
+    this.moment = moment;
   }
 
   ///# @name build
@@ -217,7 +219,7 @@ export class Document extends Base {
   runData(fn, context, index = 0) {
     if (to.type(fn) === 'function') {
       try {
-        return fn.call(context, this.documents, this.globals, this.inputs, this.faker, this.chance, index, require);
+        return fn.call(context, this.documents, this.globals, this.inputs, this.faker, this.chance, this.moment, index, require);
       } catch (e) {
         e.message = `${fn.name} failed, ${e.message}`;
         this.log('error', e);
